@@ -47,6 +47,10 @@ uv pip install -e .
 ```bash
 uv run main.py
 ```
+**prompt examples:**
+//prompt uses tools
+>what is the content of the spec.txt >what //prompt uses resources
+is in the @report.pdf document?
 
 4. 1. Run server
 
