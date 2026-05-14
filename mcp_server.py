@@ -1,6 +1,7 @@
 from pydantic import Field
 #uv add pydantic
 from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp.prompts import base
 
 mcp = FastMCP("DocumentMCP", log_level="ERROR")
 
@@ -13,10 +14,6 @@ docs = {
     "plan.md": "The plan outlines the steps for the project's implementation.",
     "spec.txt": "These specifications define the technical requirements for the equipment.",
 }
-
-# TODO: Write a prompt to rewrite a doc in markdown format
-# TODO: Write a prompt to summarize a doc
-
 
 # TODO: Write a tool to read a doc
 @mcp.tool(
@@ -60,6 +57,39 @@ def fetch_doc(doc_id: str) -> str:
     if doc_id not in docs:
         raise ValueError(f"Doc with id {doc_id} not found")
     return docs[doc_id]
+
+# TODO: Write a prompt to rewrite a doc in markdown format
+@mcp.prompt(
+    name="format",
+    description="Rewrites the contents of the document in Markdown format."
+)
+def format_document(
+    doc_id: str = Field(description="Id of the document to format"),
+) -> list [base.Message]:
+    prompt = f"""
+    Your goal is to reformat a document using proper Markdown syntax.
+
+    The id of the document you need to reformat is:
+    <document_id>
+    {doc_id}
+    </document_id>
+
+    Follow these steps:
+    1. Use the 'read_doc_contents' tool to read the current contents of the document.
+    2. Rewrite the content using proper Markdown formatting:
+       - Use # / ## / ### for headings based on the document structure
+       - Use **bold** and *italic* for emphasis where appropriate
+       - Use bullet lists (- item) or numbered lists (1. item) for enumerations
+       - Use `code` for technical terms or inline code
+       - Use > for quotes or callouts
+       - Preserve all original information — do not add or remove any content
+    3. Use the 'edit_document' tool to save the reformatted content back to the document.
+    4. Return the reformatted content as the output of this prompt.
+    """
+    return [base.UserMessage(prompt)]
+    
+# TODO: Write a prompt to summarize a doc
+
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")

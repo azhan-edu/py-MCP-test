@@ -48,9 +48,12 @@ uv pip install -e .
 uv run main.py
 ```
 **prompt examples:**
-//prompt uses tools
->what is the content of the spec.txt >what //prompt uses resources
-is in the @report.pdf document?
+#prompt uses tools
+>what is the content of the spec.txt 
+#prompt uses resources
+>what is in the @report.pdf document?
+#use prompt(prompt command) instead of custom prompt
+>/format plan.md
 
 4. 1. Run server
 
